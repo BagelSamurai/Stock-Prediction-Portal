@@ -14,7 +14,6 @@ jobs:
   build-and-push-frontend:
     name: Build & Test Frontend
     runs-on: ubuntu-latest
-    if: "contains(join(github.event.commits.*.message, ' '), '[skip frontend]') == false && (github.event_name == 'pull_request' || contains(join(github.event.commits.*.files, ' '), 'frontend/'))"
     permissions:
       contents: read
       packages: write
@@ -58,7 +57,6 @@ jobs:
   build-and-push-backend:
     name: Build & Test Backend
     runs-on: ubuntu-latest
-    if: "contains(join(github.event.commits.*.message, ' '), '[skip backend]') == false && (github.event_name == 'pull_request' || contains(join(github.event.commits.*.files, ' '), 'backend/'))"
     permissions:
       contents: read
       packages: write
