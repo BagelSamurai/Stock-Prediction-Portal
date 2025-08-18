@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import Dashboard from './Dashboard';
+import Dashboard from "../components/Dashboard.jsx";
 
 // Mock the axios module
 jest.mock('axios');

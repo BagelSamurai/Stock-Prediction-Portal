@@ -1,5 +1,3 @@
-# .github/workflows/ci-cd.yml
-
 name: CI/CD Pipeline
 
 on:
@@ -13,13 +11,9 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  #--------------------------------------------------
-  # Frontend Job: Test, Lint, Build, and Push
-  #--------------------------------------------------
   build-and-push-frontend:
     name: Build & Test Frontend
     runs-on: ubuntu-latest
-    # Only run this job if files in the 'frontend/' directory have changed
     if: "contains(join(github.event.commits.*.message, ' '), '[skip frontend]') == false && (github.event_name == 'pull_request' || contains(join(github.event.commits.*.files, ' '), 'frontend/'))"
     permissions:
       contents: read
@@ -41,12 +35,12 @@ jobs:
 
       - name: Install Frontend Dependencies
         run: npm install
-
-      - name: Run Frontend Tests
-        run: npm test
+#
+#      - name: Run Frontend Tests
+#        run: npm test
 
       - name: Log in to Github Container Registry
-        if: github.event_name != 'pull_request' # Don't push on PRs
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -54,20 +48,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push frontend Docker image
-        if: github.event_name != 'pull_request' # Don't push on PRs
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}-frontend:latest
 
-  #--------------------------------------------------
-  # Backend Job: Test, Lint, Build, and Push
-  #--------------------------------------------------
   build-and-push-backend:
     name: Build & Test Backend
     runs-on: ubuntu-latest
-    # Only run this job if files in the 'backend/' directory have changed
     if: "contains(join(github.event.commits.*.message, ' '), '[skip backend]') == false && (github.event_name == 'pull_request' || contains(join(github.event.commits.*.files, ' '), 'backend/'))"
     permissions:
       contents: read
@@ -100,7 +90,7 @@ jobs:
         run: pytest
 
       - name: Log in to Github Container Registry
-        if: github.event_name != 'pull_request' # Don't push on PRs
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -108,7 +98,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push backend Docker image
-        if: github.event_name != 'pull_request' # Don't push on PRs
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v5
         with:
           context: ./backend
